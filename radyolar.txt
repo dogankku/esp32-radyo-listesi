@@ -1,12 +1,2 @@
-Diyanet Radyo|http://yayin.diyanet.gov.tr:8000/diyanetradyo
-Diyanet Kur'an Radyo|http://yayin.diyanet.gov.tr:8000/diyanetkuran
-Diyanet Risalet Radyo|http://yayin.diyanet.gov.tr:8000/diyanetrisalet
-Akra FM|http://yayin.akradyo.net:8000/
-Lalegül FM|http://radyo.lalegulfm.com:8000/stream
-Radyo 7|http://shoutcast.radyo7.com/radyo7/mp3
-Moral FM|http://46.20.7.103:8030/stream
-Dost Radyo|http://yayin.dostradyo.com:8900/
-Bayram FM|http://yayin.bayramfm.com.tr:8000/
-Semerkand Radyo|http://yayin.semerkandradyo.com:8000/
-Radyo İslam|http://yayin.radyoislam.com:8000/stream
-Radyo Çınar|http://yayin.radyocinar.com:8000/stream
+https://eustr73.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c1171d7d2a.smil/playlist.m3u8
+https://eustr73.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c14192aa92.smil/playlist.m3u8
