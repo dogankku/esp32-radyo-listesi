@@ -1,2 +1,10 @@
 90lar Turkce|http://37.247.98.8/stream/166/;stream.mp3
 Turkuler|http://37.247.98.8/stream/22/
+Radyo 7|http://46.20.3.251/stream/169/;
+Radyo 7 Alternatif|http://canliyayin.radyo7.com/;stream
+Ribat FM|http://yayin1.canliyayin.org:7010/;
+Erkam Radyo|http://5.44.154.18:9000/;
+Seyr FM|http://yayin1.canliyayin.org:8300/
+Radyo Fitrat|http://shaincast.caster.fm:22344/listen.mp3
+Dost Radyo Erzincan|http://yayin.yayindakiler.com:3156/;stream.mp3
+Sufi Mistik|http://37.247.98.8/stream/23/
