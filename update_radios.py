@@ -39,7 +39,6 @@ MANUAL_RADIOS = [
     ("Erkam Radyo", "http://5.44.154.18:9000/;"),
     ("Seyr FM", "http://yayin1.canliyayin.org:8300/"),
     ("Radyo Fitrat", "http://shaincast.caster.fm:22344/listen.mp3"),
-    ("Dost Radyo Erzincan", "http://yayin.yayindakiler.com:3156/;stream.mp3"),
     ("Sufi Mistik", "http://37.247.98.8/stream/23/")
 ]
 
