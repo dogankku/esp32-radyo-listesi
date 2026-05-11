@@ -38,7 +38,6 @@ BLACKLIST = [
     "diyanet.gov.tr:8000",
 ]
 
-
 st.set_page_config(
     page_title="ESP32 Radyo Paneli",
     page_icon="📻",
@@ -51,6 +50,15 @@ def get_token():
         return st.secrets["GITHUB_TOKEN"]
     except Exception:
         return ""
+
+
+def github_headers():
+    token = get_token()
+
+    return {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+    }
 
 
 def is_valid_esp32_url(url: str):
@@ -66,6 +74,33 @@ def is_valid_esp32_url(url: str):
             return False, f"Bu link ESP32 için uygun değil: {bad}"
 
     return True, "OK"
+
+
+def detect_category(name, tags):
+    text = f"{name} {tags}".lower()
+
+    if any(x in text for x in ["islam", "islami", "dini", "kuran", "quran", "ilah", "akra", "ribat", "erkam", "radyo 7", "sufi"]):
+        return "Dini"
+
+    if any(x in text for x in ["turku", "türkü", "folk", "halk"]):
+        return "Turku"
+
+    if any(x in text for x in ["karadeniz", "trabzon", "rize", "ordu", "samsun"]):
+        return "Karadeniz"
+
+    if any(x in text for x in ["classic", "classical", "klasik"]):
+        return "Klasik"
+
+    if any(x in text for x in ["arabesk", "fantazi"]):
+        return "Arabesk"
+
+    if any(x in text for x in ["news", "haber"]):
+        return "Haber"
+
+    if any(x in text for x in ["pop", "hit", "hits", "top"]):
+        return "Pop"
+
+    return "Genel"
 
 
 def parse_radios(text: str):
@@ -87,7 +122,7 @@ def parse_radios(text: str):
         else:
             continue
 
-        category = category.strip()
+        category = category.strip() or "Genel"
         name = name.strip()
         url = url.strip()
 
@@ -129,12 +164,7 @@ def load_from_github():
         st.error("GITHUB_TOKEN yok. Streamlit Secrets içine eklemelisin.")
         return "", None
 
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json",
-    }
-
-    r = requests.get(API_URL, headers=headers, timeout=20)
+    r = requests.get(API_URL, headers=github_headers(), timeout=20)
 
     if r.status_code != 200:
         st.error(f"GitHub dosyası okunamadı. HTTP {r.status_code}")
@@ -156,12 +186,7 @@ def get_current_sha():
     if not token:
         return None
 
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json",
-    }
-
-    r = requests.get(API_URL, headers=headers, timeout=20)
+    r = requests.get(API_URL, headers=github_headers(), timeout=20)
 
     if r.status_code == 200:
         return r.json().get("sha")
@@ -176,16 +201,10 @@ def save_to_github(text, sha=None):
         st.error("GITHUB_TOKEN yok.")
         return False
 
-    # SHA yoksa GitHub'dan yeniden al
     if not sha:
         sha = get_current_sha()
 
     encoded = base64.b64encode(text.encode("utf-8")).decode("utf-8")
-
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json",
-    }
 
     payload = {
         "message": "Radyo listesi panelden güncellendi",
@@ -193,11 +212,10 @@ def save_to_github(text, sha=None):
         "branch": BRANCH,
     }
 
-    # Dosya varsa SHA şart
     if sha:
         payload["sha"] = sha
 
-    r = requests.put(API_URL, headers=headers, json=payload, timeout=20)
+    r = requests.put(API_URL, headers=github_headers(), json=payload, timeout=20)
 
     if r.status_code not in [200, 201]:
         st.error(f"GitHub kaydetme hatası. HTTP {r.status_code}")
@@ -205,15 +223,21 @@ def save_to_github(text, sha=None):
         return False
 
     return True
+
+
 def load_radio_browser(country="TR", limit=100):
     url = f"https://de1.api.radio-browser.info/json/stations/bycountrycodeexact/{country}"
+
     params = {
         "hidebroken": "true",
         "order": "votes",
         "reverse": "true",
         "limit": str(limit),
     }
-    headers = {"User-Agent": "ESP32-Radio-Panel/1.0"}
+
+    headers = {
+        "User-Agent": "ESP32-Radio-Panel/1.0",
+    }
 
     r = requests.get(url, params=params, headers=headers, timeout=20)
     r.raise_for_status()
@@ -241,33 +265,6 @@ def load_radio_browser(country="TR", limit=100):
         )
 
     return results
-
-
-def detect_category(name, tags):
-    text = f"{name} {tags}".lower()
-
-    if any(x in text for x in ["islam", "islami", "dini", "kuran", "quran", "ilah", "akra", "ribat", "erkam", "radyo 7", "sufi"]):
-        return "Dini"
-
-    if any(x in text for x in ["turku", "türkü", "folk", "halk"]):
-        return "Turku"
-
-    if any(x in text for x in ["karadeniz", "trabzon", "rize", "ordu", "samsun"]):
-        return "Karadeniz"
-
-    if any(x in text for x in ["classic", "classical", "klasik"]):
-        return "Klasik"
-
-    if any(x in text for x in ["arabesk", "fantazi"]):
-        return "Arabesk"
-
-    if any(x in text for x in ["news", "haber"]):
-        return "Haber"
-
-    if any(x in text for x in ["pop", "hit", "hits", "top"]):
-        return "Pop"
-
-    return "Genel"
 
 
 st.title("📻 ESP32 Radyo Yönetim Paneli")
@@ -307,22 +304,30 @@ tab1, tab2, tab3 = st.tabs(["📋 Liste", "➕ Radyo Ekle", "🔎 Otomatik Bul"]
 with tab1:
     st.subheader("Mevcut Liste")
 
-    category_filter = st.selectbox("Kategori filtresi", ["Tümü"] + sorted(set(r["Kategori"] for r in radios)))
+    category_options = ["Tümü"] + sorted(set(r["Kategori"] for r in radios))
+    category_filter = st.selectbox("Kategori filtresi", category_options)
 
     shown = radios
+
     if category_filter != "Tümü":
         shown = [r for r in radios if r["Kategori"] == category_filter]
+
+    if not shown:
+        st.info("Bu kategoride radyo yok.")
 
     for i, r in enumerate(shown):
         real_index = radios.index(r)
 
         with st.expander(f"{r['Kategori']} | {r['Radyo']}"):
+            current_category = r["Kategori"] if r["Kategori"] in CATEGORIES else "Genel"
+
             new_cat = st.selectbox(
                 "Kategori",
                 CATEGORIES,
-                index=CATEGORIES.index(r["Kategori"]) if r["Kategori"] in CATEGORIES else CATEGORIES.index("Genel"),
+                index=CATEGORIES.index(current_category),
                 key=f"cat_{real_index}",
             )
+
             new_name = st.text_input("Radyo adı", r["Radyo"], key=f"name_{real_index}")
             new_url = st.text_input("URL", r["URL"], key=f"url_{real_index}")
 
@@ -349,9 +354,9 @@ with tab1:
 with tab2:
     st.subheader("Yeni Radyo Ekle")
 
-    new_cat = st.selectbox("Kategori", CATEGORIES)
-    new_name = st.text_input("Radyo adı")
-    new_url = st.text_input("Yayın URL", placeholder="http://...")
+    new_cat = st.selectbox("Kategori", CATEGORIES, key="new_cat")
+    new_name = st.text_input("Radyo adı", key="new_name")
+    new_url = st.text_input("Yayın URL", placeholder="http://...", key="new_url")
 
     if st.button("Listeye Ekle"):
         ok, reason = is_valid_esp32_url(new_url)
@@ -360,6 +365,8 @@ with tab2:
             st.error(reason)
         elif not new_name.strip():
             st.error("Radyo adı boş olamaz.")
+        elif any(r["URL"] == new_url.strip() for r in radios):
+            st.warning("Bu URL zaten listede var.")
         else:
             radios.append(
                 {
@@ -387,7 +394,6 @@ with tab3:
     found = st.session_state.get("found_radios", [])
 
     if found:
-        st.write("Bulunanlar")
         for idx, r in enumerate(found):
             with st.expander(f"{r['Kategori']} | {r['Radyo']}"):
                 st.code(f"{r['Kategori']}|{r['Radyo']}|{r['URL']}")
@@ -397,7 +403,7 @@ with tab3:
                         radios.append(r)
                         st.success("Eklendi")
                     else:
-                        st.warning("Bu URL zaten listede var")
+                        st.warning("Bu URL zaten listede var.")
 
 st.divider()
 
@@ -413,10 +419,11 @@ with right:
 
     if st.button("GitHub’a Kaydet", type="primary"):
         output_text = make_text(radios)
-        ok = save_to_github(output_text, st.session_state.sha)
+        ok = save_to_github(output_text, st.session_state.get("sha"))
 
         if ok:
             st.success("GitHub’daki radyolar.txt güncellendi.")
             text, sha = load_from_github()
             st.session_state.sha = sha
             st.session_state.radios = parse_radios(text)
+            st.rerun()
