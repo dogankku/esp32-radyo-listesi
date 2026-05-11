@@ -150,12 +150,35 @@ def load_from_github():
     return decoded, sha
 
 
-def save_to_github(text, sha):
+def get_current_sha():
+    token = get_token()
+
+    if not token:
+        return None
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+    }
+
+    r = requests.get(API_URL, headers=headers, timeout=20)
+
+    if r.status_code == 200:
+        return r.json().get("sha")
+
+    return None
+
+
+def save_to_github(text, sha=None):
     token = get_token()
 
     if not token:
         st.error("GITHUB_TOKEN yok.")
         return False
+
+    # SHA yoksa GitHub'dan yeniden al
+    if not sha:
+        sha = get_current_sha()
 
     encoded = base64.b64encode(text.encode("utf-8")).decode("utf-8")
 
@@ -170,6 +193,7 @@ def save_to_github(text, sha):
         "branch": BRANCH,
     }
 
+    # Dosya varsa SHA şart
     if sha:
         payload["sha"] = sha
 
@@ -181,8 +205,6 @@ def save_to_github(text, sha):
         return False
 
     return True
-
-
 def load_radio_browser(country="TR", limit=100):
     url = f"https://de1.api.radio-browser.info/json/stations/bycountrycodeexact/{country}"
     params = {
