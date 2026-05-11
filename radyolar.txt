@@ -1,4 +1,8 @@
-# Otomatik güncellendi: 2026-05-10 18:42 UTC
+# Otomatik güncellendi: 2026-05-11 01:49 UTC
 90lar Turkce|http://37.247.98.8/stream/166/;stream.mp3
 Turkuler|http://37.247.98.8/stream/22/
-Radyo 7|http://46.20.3.251/stream/169/;
+Radyo 7|http://46.20.3.250/;stream
+Gözyaşı FM|http://yayin1.canliyayin.org:8700/;*.mp3
+Ribat FM|http://yayin1.canliyayin.org:7010/;*.mp3
+Enderun FM|http://yayin2.canliyayin.org:7052/;*.mp3
+Radyo Fıtrat|http://radyofitrat.radyotvonline.net/
