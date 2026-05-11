@@ -1,8 +1,14 @@
-# Otomatik güncellendi: 2026-05-11 08:52 UTC
-90lar Turkce|http://37.247.98.8/stream/166/;stream.mp3
-Turkuler|http://37.247.98.8/stream/22/
-Radyo 7|http://46.20.3.250/;stream
-Gözyaşı FM|http://yayin1.canliyayin.org:8700/;*.mp3
-Ribat FM|http://yayin1.canliyayin.org:7010/;*.mp3
-Enderun FM|http://yayin2.canliyayin.org:7052/;*.mp3
-Radyo Fıtrat|http://radyofitrat.radyotvonline.net/
+# Panelden güncellendi: 2026-05-11 09:20 UTC
+Genel|90lar Turkce|http://37.247.98.8/stream/166/;stream.mp3
+Genel|Turkuler|http://37.247.98.8/stream/22/
+Genel|Radyo 7|http://46.20.3.250/;stream
+Genel|Gözyaşı FM|http://yayin1.canliyayin.org:8700/;*.mp3
+Genel|Ribat FM|http://yayin1.canliyayin.org:7010/;*.mp3
+Genel|Enderun FM|http://yayin2.canliyayin.org:7052/;*.mp3
+Genel|Radyo Fıtrat|http://radyofitrat.radyotvonline.net/
+Pop|pop 90 turkey|http://23623.live.streamtheworld.com:3690/POP90AAC_SC
+Turku|Park Fm|http://yayin.netradyom.com:8050/PARKFM/
+Klasik|Borusan Klasik|http://27783.live.streamtheworld.com/BORUSAN_KLASIKAAC_SC
+Genel|Pal station|http://shoutcast.radyogrup.com:1020/
+Genel|Metro FM|http://28503.live.streamtheworld.com:3690/METRO_FMAAC_SC
+Arabesk|Arabesk FM|http://yayin.arabeskfm.biz:8042/
